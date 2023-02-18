@@ -9,13 +9,15 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
-@if(SignInManager.IsSignnedIn(User))
+@if(SignInManager.IsSignedIn(User))
 {
 <div>
-    @Html.ActionLink("List of Users", "Index", "Users")<br />
+        @if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals("f6241a56-830f-48d3-befc-2f192e7b996f"))
+        {
+            @Html.ActionLink("List of Users", "Index", "Users")<br />
+        }
     @Html.ActionLink("List of Products", "Index", "Products")<br />
-    @Html.ActionLink("List of Inventory","Index","Inventories")
+    @Html.ActionLink("List of Inventory","Index","InventoryDates")
 </div>
 }

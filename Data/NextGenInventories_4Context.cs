@@ -23,5 +23,7 @@ namespace NextGenInventories_4.Data
         public DbSet<NextGenInventories_4.Models.Ingredient> Ingredient { get; set; } = default!;
 
         public DbSet<NextGenInventories_4.Models.Recipe> Recipe { get; set; } = default!;
+
+        public DbSet<NextGenInventories_4.Models.InventoryDate> InventoryDate { get; set; } = default!;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,9 +21,20 @@ namespace NextGenInventories_4.Controllers
         }
 
         // GET: Inventories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var nextGenInventories_4Context = _context.Inventory.Include(i => i.Product);
+            if (_context.Inventory == null)
+            {
+                return Problem("Entity set 'NextGenInventories_4Context.Inventory'  is null.");
+            }
+            var nextGenInventories_4Context = from p in _context.Inventory.Include(i => i.Product) select p;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                nextGenInventories_4Context = nextGenInventories_4Context.Where(p => p.Product.ProductName!.Contains(searchString));
+            }
+
+            //var nextGenInventories_4Context = _context.Inventory.Include(i => i.Product);
+
             return View(await nextGenInventories_4Context.ToListAsync());
         }
 
@@ -41,6 +53,7 @@ namespace NextGenInventories_4.Controllers
             {
                 return NotFound();
             }
+
 
             return View(inventory);
         }
@@ -61,6 +74,15 @@ namespace NextGenInventories_4.Controllers
         {
             if (ModelState.IsValid)
             {
+                /**if (ProductExists(inventory.ProductId))
+                {
+                    Inventory temp = inventory;
+                    temp.InventoryId = ProductExistsById(inventory.ProductId);
+                    _context.Update(temp);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }*/
                 _context.Add(inventory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -155,14 +177,36 @@ namespace NextGenInventories_4.Controllers
             {
                 _context.Inventory.Remove(inventory);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InventoryExists(int id)
         {
-          return (_context.Inventory?.Any(e => e.InventoryId == id)).GetValueOrDefault();
+            return (_context.Inventory?.Any(e => e.InventoryId == id)).GetValueOrDefault();
+        }
+
+        //Checks if the product exists
+        //returns bool
+        private bool ProductExists(int id)
+        {
+            return (_context.Inventory?.Any(e => e.ProductId == id)).GetValueOrDefault();
+        }
+        //Checks if product exists
+        //returns inventoryId
+        private int ProductExistsById(int ProductId)
+        {
+            var id = -1;
+            foreach (Inventory inventory in _context.Inventory)
+            {
+                if (inventory.ProductId == ProductId)
+                {
+                    id = inventory.InventoryId;
+                    return id;
+                }
+            }
+            return id;
         }
     }
 }

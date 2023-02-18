@@ -1,0 +1,59 @@
+﻿@model IEnumerable<NextGenInventories_4.Models.InventoryDate>
+@using System.Security.Claims
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="InventoryDates" asp-action="Index" method="get">
+    <p>Product: <input type="text" name="SearchString"/>
+        <input type="submit"value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Product.ProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.GroupBy(p=>p.ProductId)) {
+            @if (item.ToList().ElementAt(0).UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ToList().ElementAt(0).Product.ProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>item.ToList().ElementAt(0).Product.ProductDescription)
+                    </td>
+                    <td>
+                        @item.Sum(i=>i.Quantity)    
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ToList().ElementAt(0).ProductId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ToList().ElementAt(0).InventoryDateId">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+    <a asp-action="DetailList">Detail List</a>
+</table>

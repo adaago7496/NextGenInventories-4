@@ -33,8 +33,10 @@
         <tbody>
             @foreach(var item in Model)
             {
-                <tr>
-                    <td>
+                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == item.UserId)
+                {
+                    <tr>
+                        <td>
                         @Html.DisplayFor(modelItem=>item.Product.ProductName)
                     </td>
                     <td>
@@ -51,6 +53,7 @@
                         <a asp-action="Delete" asp-route-id="@item.InventoryDateId">Delete</a>
                     </td>
                 </tr>
+                }
             }
         </tbody>
     </table>

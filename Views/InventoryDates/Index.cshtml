@@ -34,26 +34,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.GroupBy(p=>p.ProductId)) {
-            @if (item.ToList().ElementAt(0).UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ToList().ElementAt(0).Product.ProductName)
+@foreach (var item in Model.GroupBy(u=>u.UserId)) {
+    @foreach(var product in item.GroupBy(p=>p.ProductId)){
+                @if (item.ToList().ElementAt(0).UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    <tr>
+                        <td>
+                        @Html.DisplayFor(modelItem => product.ToList().ElementAt(0).Product.ProductName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem=>item.ToList().ElementAt(0).Product.ProductDescription)
+                        @Html.DisplayFor(modelItem=>product.ToList().ElementAt(0).Product.ProductDescription)
                     </td>
                     <td>
-                        @item.Sum(i=>i.Quantity)    
+                        @product.Sum(i=>i.Quantity)    
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.ToList().ElementAt(0).ProductId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ToList().ElementAt(0).InventoryDateId">Delete</a>
+                        <a asp-action="Details" asp-route-id="@product.ToList().ElementAt(0).ProductId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@product.ToList().ElementAt(0).InventoryDateId">Delete</a>
                     </td>
                 </tr>
+                }
             }
         }
     </tbody>
-    <a asp-action="DetailList">Detail List</a>
 </table>

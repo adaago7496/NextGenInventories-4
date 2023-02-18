@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 
 namespace NextGenInventories_4.Models
 {
@@ -13,11 +14,11 @@ namespace NextGenInventories_4.Models
         public virtual Product Product { get; set; }
 
         public int Quantity { get; set; }
+        [Display(Name ="Date Added")]
         [DataType(DataType.Date)]
-        [ValidateNever]
-        public DateTime? DateAdded { get; set; }
+        public DateTime DateAdded { get; set; }
+        [Display(Name ="Date Modified")]
         [DataType(DataType.Date)]
-        [ValidateNever]
         public DateTime? DateModified { get; set; }
     }
 }

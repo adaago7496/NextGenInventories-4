@@ -86,6 +86,7 @@ namespace NextGenInventories_4.Controllers
             return View();
         }
 
+
         // POST: InventoryDates/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -93,14 +94,10 @@ namespace NextGenInventories_4.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InventoryDateId,UserId,ProductId,Quantity,DateAdded,DateModified")] InventoryDate inventoryDate)
         {
-            if (inventoryDate.DateAdded.ToString().Equals(""))
-            {
-                inventoryDate.DateAdded = DateTime.Now;
-            }
-            if (inventoryDate.DateModified.ToString().Equals(""))
-            {
-                inventoryDate.DateModified = DateTime.Now;
-            }
+            
+            inventoryDate.DateAdded = DateTime.Today;
+            inventoryDate.DateModified = DateTime.Now;
+            
             if (ModelState.IsValid)
             {
                 _context.Add(inventoryDate);
@@ -124,6 +121,7 @@ namespace NextGenInventories_4.Controllers
             {
                 return NotFound();
             }
+            
             ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", inventoryDate.ProductId);
             return View(inventoryDate);
         }
@@ -135,11 +133,12 @@ namespace NextGenInventories_4.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("InventoryDateId,UserId,ProductId,Quantity,DateAdded,DateModified")] InventoryDate inventoryDate)
         {
+            
             if (id != inventoryDate.InventoryDateId)
             {
                 return NotFound();
             }
-
+            
             if (ModelState.IsValid)
             {
                 try
